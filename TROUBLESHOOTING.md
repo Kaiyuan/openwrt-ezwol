@@ -1,5 +1,173 @@
 # GitHub Actions 故障排查指南
 
+## 安装问题
+
+### 缺少依赖包
+
+**症状**：
+```
+cannot find dependency socat for ezwol
+Cannot install package ezwol.
+```
+
+**原因**：
+OpenWRT 路由器上没有安装 `socat` 和 `etherwake` 依赖包。
+
+**解决方案**：
+
+先安装依赖包，再安装 ezwol：
+
+```bash
+# 1. 更新包列表
+opkg update
+
+# 2. 安装依赖
+opkg install socat etherwake
+
+# 3. 安装 ezwol
+opkg install ezwol_*.ipk
+```
+
+**一键安装脚本**：
+```bash
+opkg update && opkg install socat etherwake && opkg install /tmp/ezwol_*.ipk
+```
+
+### 架构不兼容
+
+**症状**：
+```
+incompatible with the architectures configured
+Cannot install package ezwol.
+```
+
+**原因**：
+- 使用了错误架构的 IPK 包
+- 或者使用快速构建的包但路由器不支持
+
+**解决方案**：
+
+#### 方案 A：使用快速构建的包（推荐）
+快速构建生成的是 `all` 架构（架构无关），适用于大多数设备：
+```bash
+# 从 GitHub Actions 下载 ezwol-quick-build
+opkg update
+opkg install socat etherwake
+opkg install ezwol_1.0.0-1_all.ipk
+```
+
+#### 方案 B：使用对应架构的包
+如果快速构建的包不工作，使用完整 SDK 构建的对应架构包：
+
+1. 查看路由器架构：
+```bash
+opkg print-architecture
+```
+
+2. 下载对应架构的 IPK 包（从 GitHub Releases）
+
+3. 安装：
+```bash
+opkg update
+opkg install socat etherwake
+opkg install ezwol_*_<your-arch>.ipk
+```
+
+#### 方案 C：本地构建
+```bash
+# 在项目目录
+./build-ipk.sh
+# 生成的包在 build/ 目录
+```
+
+---
+
+## LuCI 界面问题
+
+### JavaScript 错误
+
+**症状**：
+```
+TypeError: Cannot read properties of undefined (reading 'Checkbox')
+```
+或 LuCI 界面无法加载。
+
+**原因**：
+- LuCI 版本不兼容
+- LuCI 缓存问题
+- 文件权限问题
+
+**解决方案**：
+
+#### 方案 A：清除 LuCI 缓存
+```bash
+ssh root@192.168.1.1
+rm -rf /tmp/luci-*
+/etc/init.d/uhttpd restart
+```
+
+然后刷新浏览器（Ctrl+F5 强制刷新）。
+
+#### 方案 B：检查文件权限
+```bash
+chmod 644 /usr/lib/lua/luci/controller/ezwol.lua
+chmod 644 /usr/lib/lua/luci/model/cbi/ezwol.lua
+chmod 644 /usr/lib/lua/luci/view/ezwol/usage.htm
+```
+
+#### 方案 C：重新安装
+```bash
+opkg remove ezwol
+opkg install /tmp/ezwol_*.ipk
+rm -rf /tmp/luci-*
+/etc/init.d/uhttpd restart
+```
+
+#### 方案 D：使用命令行配置
+如果 LuCI 界面始终有问题，可以完全通过命令行配置：
+```bash
+# 生成密钥
+AUTH_KEY=$(head -c 32 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)
+
+# 配置
+uci set ezwol.config.enabled='1'
+uci set ezwol.config.port='61323'
+uci set ezwol.config.auth_key="$AUTH_KEY"
+uci commit ezwol
+
+# 启动
+/etc/init.d/ezwol start
+/etc/init.d/ezwol enable
+
+# 显示密钥
+echo "密钥: $AUTH_KEY"
+```
+
+### LuCI 菜单不显示
+
+**症状**：
+在 LuCI 界面的"服务"菜单中找不到 EzWoL 选项。
+
+**解决方案**：
+
+1. 清除缓存：
+```bash
+rm -rf /tmp/luci-*
+/etc/init.d/uhttpd restart
+```
+
+2. 检查文件是否安装：
+```bash
+ls -l /usr/lib/lua/luci/controller/ezwol.lua
+ls -l /usr/lib/lua/luci/model/cbi/ezwol.lua
+```
+
+3. 如果文件不存在，重新安装插件。
+
+---
+
+## GitHub Actions 构建问题
+
 ## 常见问题和解决方案
 
 ### 1. SDK 下载超时

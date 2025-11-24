@@ -30,10 +30,9 @@ s.anonymous = true
 s.addremove = false
 
 -- Enable/Disable
-o = s:option(Flag, "enabled", translate("Enable"))
-o.default = "0"
+o = s:option(Flag, "enabled", translate("Enable Service"))
 o.rmempty = false
-o.description = translate("Enable or disable the EzWoL service")
+
 
 -- Port configuration
 o = s:option(Value, "port", translate("Listen Port"))
