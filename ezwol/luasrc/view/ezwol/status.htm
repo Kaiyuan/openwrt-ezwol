@@ -1,0 +1,24 @@
+<%+cbi/valueheader%>
+
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(5, '<%=luci.dispatcher.build_url("admin", "services", "ezwol", "status")%>', null,
+		function(x, data) {
+			var tb = document.getElementById('ezwol_status');
+			if (data && tb) {
+				if (data.running) {
+					tb.innerHTML = '<span style="color:green;font-weight:bold">● Running</span>';
+				} else {
+					tb.innerHTML = '<span style="color:red;font-weight:bold">● Stopped</span>';
+				}
+			}
+		}
+	);
+//]]></script>
+
+<div class="cbi-value-field">
+	<span id="ezwol_status">
+		<em><%:Checking status...%></em>
+	</span>
+</div>
+
+<%+cbi/valuefooter%>
