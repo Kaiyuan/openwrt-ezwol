@@ -12,8 +12,10 @@ jobs:
   build:
     name: Build IPK Package
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     
     strategy:
+      fail-fast: false
       matrix:
         arch:
           - name: x86_64
@@ -29,7 +31,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      
       - name: Install dependencies
+        timeout-minutes: 5
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential libncurses5-dev gawk git libssl-dev gettext zlib1g-dev swig unzip time rsync python3
@@ -43,11 +53,13 @@ jobs:
       
       - name: Download OpenWRT SDK
         if: steps.cache-sdk.outputs.cache-hit != 'true'
+        timeout-minutes: 10
         run: |
-          wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 5 \
-            -O openwrt-sdk.tar.xz ${{ matrix.arch.sdk_url }}
+          wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 \
+            --progress=dot:giga -O openwrt-sdk.tar.xz ${{ matrix.arch.sdk_url }}
       
       - name: Extract SDK
+        timeout-minutes: 5
         run: |
           tar xf openwrt-sdk.tar.xz
           mv openwrt-sdk-* openwrt-sdk
@@ -57,21 +69,24 @@ jobs:
           cp -r ezwol openwrt-sdk/package/
       
       - name: Update feeds
+        timeout-minutes: 10
         working-directory: openwrt-sdk
         run: |
           ./scripts/feeds update -a
           ./scripts/feeds install -a
       
       - name: Configure build
+        timeout-minutes: 5
         working-directory: openwrt-sdk
         run: |
           echo "CONFIG_PACKAGE_ezwol=m" >> .config
-          make defconfig
+          make defconfig V=s
       
       - name: Build package
+        timeout-minutes: 20
         working-directory: openwrt-sdk
         run: |
-          make package/ezwol/compile V=s
+          make package/ezwol/compile V=s -j$(nproc)
       
       - name: Find IPK files
         id: find_ipk
@@ -80,6 +95,7 @@ jobs:
           IPK_FILE=$(find bin/packages -name "ezwol_*.ipk" | head -n 1)
           echo "ipk_file=$IPK_FILE" >> $GITHUB_OUTPUT
           echo "ipk_name=$(basename $IPK_FILE)" >> $GITHUB_OUTPUT
+          echo "Found IPK: $IPK_FILE"
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4

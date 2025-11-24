@@ -79,6 +79,9 @@ chmod +x deploy-dev.sh
 
 详细构建说明请参考 [BUILD.md](BUILD.md)
 
+> [!TIP]
+> **GitHub Actions 故障排查**: 如果自动编译遇到问题，请查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
 ---
 
 ## Installation
