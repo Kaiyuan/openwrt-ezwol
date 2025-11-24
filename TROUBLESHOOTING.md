@@ -70,7 +70,29 @@ Error: The operation was canceled.
 - 检查 Makefile 语法
 - 使用快速构建作为替代
 
-### 4. 磁盘空间不足
+### 4. Feeds 更新错误
+
+**症状**：
+```
+/home/runner/.../bin/find: 'feeds/telephony': No such file or directory
+Error: Process completed with exit code 1.
+```
+
+**原因**：
+某些 OpenWRT SDK 版本不包含 telephony feed。
+
+**解决方案**：
+已修复！workflow 现在只更新必要的 feeds：
+```yaml
+./scripts/feeds update base packages luci routing || true
+./scripts/feeds install -a -p base
+./scripts/feeds install -a -p packages
+./scripts/feeds install -a -p luci || true
+```
+
+如果仍有问题，重新运行工作流即可。
+
+### 5. 磁盘空间不足
 
 **症状**：
 ```

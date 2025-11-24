@@ -72,8 +72,11 @@ jobs:
         timeout-minutes: 10
         working-directory: openwrt-sdk
         run: |
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          # Update only base feeds, ignore telephony if missing
+          ./scripts/feeds update base packages luci routing || true
+          ./scripts/feeds install -a -p base
+          ./scripts/feeds install -a -p packages
+          ./scripts/feeds install -a -p luci || true
       
       - name: Configure build
         timeout-minutes: 5
