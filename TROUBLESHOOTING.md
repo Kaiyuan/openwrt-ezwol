@@ -166,6 +166,30 @@ ls -l /usr/lib/lua/luci/model/cbi/ezwol.lua
 
 ---
 
+## 配置文件问题
+
+### 配置文件冲突警告
+
+**症状**：
+```
+resolve_conffiles: Existing conffile /etc/config/ezwol is different...
+The new conffile will be placed at /etc/config/ezwol-opkg.
+```
+
+**原因**：
+这是 OpenWRT 的正常行为。当你修改了配置文件（例如设置了密钥），然后重新安装或升级插件时，系统会：
+1. **保留**你现有的配置文件（`/etc/config/ezwol`），确保你的设置不丢失。
+2. 将插件自带的默认配置文件保存为 `/etc/config/ezwol-opkg`。
+
+**解决方案**：
+- **无需操作**：如果你想保留当前的配置（密钥、端口等），直接忽略此警告即可。
+- **恢复默认**：如果你想使用新的默认配置，可以运行：
+  ```bash
+  mv /etc/config/ezwol-opkg /etc/config/ezwol
+  ```
+
+---
+
 ## GitHub Actions 构建问题
 
 ## 常见问题和解决方案

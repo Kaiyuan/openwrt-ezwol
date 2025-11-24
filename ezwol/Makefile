@@ -13,7 +13,7 @@ define Package/ezwol
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Easy Wake-on-LAN service
-  DEPENDS:=+etherwake +socat
+  DEPENDS:=+etherwake +socat +luci-base
   PKGARCH:=all
 endef
 
@@ -48,6 +48,9 @@ define Package/ezwol/install
 	
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/ezwol
 	$(INSTALL_DATA) ./luasrc/view/ezwol/usage.htm $(1)/usr/lib/lua/luci/view/ezwol/
+	
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
+	po2lmo ./po/zh_Hans/ezwol.po $(1)/usr/lib/lua/luci/i18n/ezwol.zh-cn.lmo 2>/dev/null || true
 endef
 
 $(eval $(call BuildPackage,ezwol))

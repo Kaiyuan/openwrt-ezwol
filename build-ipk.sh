@@ -39,8 +39,21 @@ cp ezwol/luasrc/controller/ezwol.lua ${PACKAGE_DIR}/usr/lib/lua/luci/controller/
 cp ezwol/luasrc/model/cbi/ezwol.lua ${PACKAGE_DIR}/usr/lib/lua/luci/model/cbi/
 cp ezwol/luasrc/view/ezwol/usage.htm ${PACKAGE_DIR}/usr/lib/lua/luci/view/ezwol/
 
+# 复制翻译文件
+echo "6. 复制翻译文件..."
+mkdir -p ${PACKAGE_DIR}/usr/lib/lua/luci/i18n
+if [ -f ezwol/po/zh_Hans/ezwol.po ]; then
+    # 如果有 po2lmo 工具，转换翻译文件
+    if command -v po2lmo >/dev/null 2>&1; then
+        po2lmo ezwol/po/zh_Hans/ezwol.po ${PACKAGE_DIR}/usr/lib/lua/luci/i18n/ezwol.zh-cn.lmo
+    else
+        echo "  注意: po2lmo 未找到，跳过翻译文件转换"
+        echo "  翻译文件将在路由器上自动生成"
+    fi
+fi
+
 # 设置权限
-echo "设置文件权限..."
+echo "7. 设置文件权限..."
 chmod 755 ${PACKAGE_DIR}/etc/init.d/ezwol
 chmod 755 ${PACKAGE_DIR}/usr/sbin/ezwold
 chmod 644 ${PACKAGE_DIR}/etc/config/ezwol
@@ -53,7 +66,7 @@ echo "创建 control 文件..."
 cat > ${PACKAGE_DIR}/CONTROL/control << EOF
 Package: ${PACKAGE_NAME}
 Version: ${VERSION}-${RELEASE}
-Depends: etherwake, socat
+Depends: etherwake, socat, luci-base
 Section: net
 Category: Network
 Architecture: ${ARCH}

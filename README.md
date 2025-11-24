@@ -32,6 +32,7 @@ See [Quick Build](#quick-build-推荐) section below.
 - 🔑 **Random Key Generator**: One-click generation of secure authentication keys
 - 📊 **Service Status**: Real-time service status monitoring in web interface
 - 🪶 **Lightweight**: Minimal resource usage, perfect for routers
+- 🌏 **Chinese Language**: Full Chinese translation for LuCI interface
 
 ## Requirements
 

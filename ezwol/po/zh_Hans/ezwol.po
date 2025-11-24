@@ -1,0 +1,68 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "EzWoL - Easy Wake-on-LAN"
+msgstr "EzWoL - 简易网络唤醒"
+
+msgid "A service that listens for MAC addresses on a network port and sends Wake-on-LAN magic packets to wake up devices on the LAN."
+msgstr "一个监听网络端口接收 MAC 地址并向局域网发送网络唤醒魔术包的服务。"
+
+msgid "Service Status"
+msgstr "服务状态"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Service Settings"
+msgstr "服务设置"
+
+msgid "Enable Service"
+msgstr "启用服务"
+
+msgid "Listen Port"
+msgstr "监听端口"
+
+msgid "TCP port to listen for incoming WoL requests (default: 61323)"
+msgstr "监听 WoL 请求的 TCP 端口（默认：61323）"
+
+msgid "Authentication Key"
+msgstr "认证密钥"
+
+msgid "Shared secret key for authenticating WoL requests. Keep this secure!"
+msgstr "用于验证 WoL 请求的共享密钥。请妥善保管！"
+
+msgid "Generate Random Key"
+msgstr "生成随机密钥"
+
+msgid "Generate New Key"
+msgstr "生成新密钥"
+
+msgid "Generate a random 32-character authentication key"
+msgstr "生成一个 32 位随机认证密钥"
+
+msgid "Usage Information"
+msgstr "使用说明"
+
+msgid "How to Use EzWoL"
+msgstr "如何使用 EzWoL"
+
+msgid "Send a request to this router using the following format:"
+msgstr "使用以下格式向路由器发送请求："
+
+msgid "Example using netcat (nc):"
+msgstr "使用 netcat (nc) 的示例："
+
+msgid "Example using telnet:"
+msgstr "使用 telnet 的示例："
+
+msgid "Note:"
+msgstr "注意："
+
+msgid "Replace \"your-key\" with your actual authentication key and \"00:11:22:33:44:55\" with the target device's MAC address."
+msgstr "将 \"your-key\" 替换为您的实际认证密钥，将 \"00:11:22:33:44:55\" 替换为目标设备的 MAC 地址。"
+
+msgid "For more examples and detailed documentation, see the README file."
+msgstr "更多示例和详细文档，请参阅 README 文件。"
+
+msgid "Checking status..."
+msgstr "正在检查状态..."
