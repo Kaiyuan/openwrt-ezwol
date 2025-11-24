@@ -7,29 +7,38 @@
         <p>
             <%:Send a request to this router using the following format:%>
         </p>
-        <pre
-            style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">AUTH_KEY:MAC_ADDRESS</pre>
+        <pre style="background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;">AUTH_KEY:MAC_ADDRESS</pre>
 
         <h4>
             <%:Example using netcat (nc):%>
         </h4>
         <pre
-            style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">echo "your-key:00:11:22:33:44:55" | nc <%=luci.sys.hostname()%> <%=self.map:get("config", "port") or "61323"%></pre>
+            style="background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;">echo "your-key:00:11:22:33:44:55" | nc <%=luci.sys.hostname()%> <%=self.map:get('config','port') or '61323'%></pre>
 
         <h4>
             <%:Example using telnet:%>
         </h4>
-        <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">telnet <%=luci.sys.hostname()%> <%=self.map:get("config", "port") or "61323"%>
+        <pre style="background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;">telnet <%=luci.sys.hostname()%> <%=self.map:get('config','port') or '61323'%>
 # Then type: your-key:00:11:22:33:44:55</pre>
 
-        <p style="margin-top: 15px;">
-            <strong>
+        <h4>
+            <%:Example using Python client:%>
+        </h4>
+        <pre
+            style="background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;">python3 test-client.py <%=luci.sys.hostname()%> <%=self.map:get('config','port') or '61323'%> your-key 00:11:22:33:44:55</pre>
+
+        <h4>
+            <%:Example using test-client.sh:%>
+        </h4>
+        <pre
+            style="background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;">./test-client.sh <%=luci.sys.hostname()%> <%=self.map:get('config','port') or '61323'%> your-key 00:11:22:33:44:55</pre>
+
+        <p style="margin-top:15px;"><strong>
                 <%:Note:%>
             </strong>
             <%:Replace "your-key" with your actual authentication key and "00:11:22:33:44:55" with the target device's
                 MAC address.%>
         </p>
-
         <p>
             <%:For more examples and detailed documentation, see the README file.%>
         </p>

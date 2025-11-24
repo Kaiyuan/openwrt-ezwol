@@ -143,6 +143,33 @@ uci commit ezwol
 echo "密钥: $AUTH_KEY"
 ```
 
+### LuCI 模板错误
+
+**症状**：
+```
+Failed to load template 'cbi /valueheader'
+Error while parsing template ... No such file or directory
+```
+
+**原因**：
+这是一个已知的代码拼写错误（多了一个空格），在 v1.0.0 版本中可能存在。
+
+**解决方案**：
+已在最新代码中修复。如果您遇到此问题，请更新到最新版本，或手动修改 `/usr/lib/lua/luci/view/ezwol/usage.htm`：
+
+将：
+```html
+<%+cbi /valueheader%>
+...
+<%+cbi /valuefooter%>
+```
+修改为（去掉空格）：
+```html
+<%+cbi/valueheader%>
+...
+<%+cbi/valuefooter%>
+```
+
 ### LuCI 菜单不显示
 
 **症状**：
